@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, NextBus!</string>
+    <string name="app_name">NextBus</string>
+    <string name="column_time">Mins to Bus</string>
+    <string name="column_direction">Direction</string>
+    <string name="column_bus_route">Bus Route</string>
+</resources>
