@@ -112,15 +112,15 @@ public class MargueriteTransportation {
 			ArrayList<BusLine> buses = parsedInfo.getBusLines();
 			
 			BusStop b2r = parsedInfo.getStop();
-			for(BusLine bus: buses)
-			{
-				System.out.println("--------------  Bus Line ---------");
-				System.out.println("Minuste left: " + bus.getEstimatedDepartureTime());
-				System.out.println("Icon of bus: " + bus.getIcon());
-				System.out.println("Direction: " + bus.getServiceTo());
-				System.out.println("Name:  " + bus.getLineName());
-				System.out.println("Status:  " + bus.getStatus());
-			}
+//			for(BusLine bus: buses)
+//			{
+//				System.out.println("--------------  Bus Line ---------");
+//				System.out.println("Minuste left: " + bus.getEstimatedDepartureTime());
+//				System.out.println("Icon of bus: " + bus.getIcon());
+//				System.out.println("Direction: " + bus.getServiceTo());
+//				System.out.println("Name:  " + bus.getLineName());
+//				System.out.println("Status:  " + bus.getStatus());
+//			}
 
 
 

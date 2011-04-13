@@ -28,7 +28,7 @@
         
         	<intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <data android:scheme="http" android:host="www.google.com" />
+                <data android:scheme="http" android:host="www.tappem.com" />
                  <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
             <intent-filter>

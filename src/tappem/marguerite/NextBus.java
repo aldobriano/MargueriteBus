@@ -10,6 +10,7 @@ import tappem.marguerite.BusLine;
 import tappem.marguerite.BusStop;
 import tappem.marguerite.MargueriteTransportation;
 import android.app.Activity;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
@@ -64,15 +65,14 @@ public class NextBus extends Activity implements OnClickListener{
 		{
 			stopId = (String) savedInstanceState.getSerializable(BusAdapter.KEY_ID);
 		}
-		//      resolveIntent(getIntent());
+		resolveIntent(getIntent());
 
 		if(stopId == null) {
-			stopId = "17";
+			stopId = "17"; //hardcoded for testing purposes
 		}
-
-		//handle intent  resolveIntent blabla TODO
-		stopId = "66";
-
+		
+		
+		
 		fillData();
 
 
@@ -83,7 +83,9 @@ public class NextBus extends Activity implements OnClickListener{
 
 		System.out.println("RESOLVED!!!! " + tag);
 		//stopId = serverData.getStopIdFromTagId(tag);
-		stopId = "3";
+		stopId = serverData.getStopIdFromTagId("33");
+		System.out.println("TAGID " + tag + "   stopID = " +  stopId);
+		//stopId = "3";
 	}
 	protected void fillData()
 	{
@@ -176,7 +178,7 @@ public class NextBus extends Activity implements OnClickListener{
 			}
 			BusLine currentLine = bus.getBusLines().get(position);
 			//	holder.busLine.setText(currentLine.getLineName());
-			System.out.println("FOR THE LIST: " + currentLine.toString());
+			//System.out.println("FOR THE LIST: " + currentLine.toString());
 			String imageName = currentLine.getIcon();
 			ImageView busLineIcon = (ImageView) convertView.findViewById(R.id.busLineImage);
 			String uri = "drawable/" + imageName;
