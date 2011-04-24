@@ -18,6 +18,7 @@ import android.nfc.tech.MifareClassic;
 import android.nfc.tech.NfcV;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -70,6 +71,8 @@ public class BusTagRead extends Activity {
 		System.out.println("ABOUT TO RESOLVE");
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action))
 		{
+			
+
 			Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			System.out.println("YES!!!  ");
 			System.out.println(new String(tagFromIntent.getId()));
@@ -104,6 +107,8 @@ public class BusTagRead extends Activity {
 			// include a PendingIntent for the service to call back onto. This
 			// will cause this activity to be restarted with onNewIntent(). At
 			// that time we read it from the database and view it.
+			
+
 			Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			
 			System.out.println("BYTE ID ARRAY: " + tagFromIntent.getId());

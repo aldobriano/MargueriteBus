@@ -3,15 +3,21 @@ package tappem.marguerite;
 
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 import tappem.marguerite.BusLine;
 import tappem.marguerite.BusStop;
 import tappem.marguerite.MargueriteTransportation;
 import android.app.Activity;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,6 +27,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -51,13 +59,18 @@ public class NextBus extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.next_bus);
-		
+		// Get instance of Vibrator from current Context
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		 
+		// Vibrate for 300 milliseconds
+		v.vibrate(1000);
+		checkVersion();
 		final Button button = (Button) findViewById(R.id.refresh);
         button.setOnClickListener(this);
 		
 		uniqueId = SystemTools.getUniqueId(this);
 
-		serverData = new MargueriteTransportation(SystemTools.getUniqueId(this));
+		serverData = new MargueriteTransportation(uniqueId);
 		if(savedInstanceState == null)
 		{
 			stopId = null;
@@ -68,7 +81,14 @@ public class NextBus extends Activity implements OnClickListener{
 		resolveIntent(getIntent());
 
 		if(stopId == null) {
-			stopId = "17"; //hardcoded for testing purposes
+			CharSequence text = "This bus stop is not currently registered in TAPPATS, we'll fix this as soon as we can!\n Sorry! :).";
+			//if we could send the gps information it would be great here!! TODO
+			int duration = Toast.LENGTH_LONG;
+
+			Toast toast = Toast.makeText(this, text, duration);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			finish();
 		}
 		
 		
@@ -81,15 +101,63 @@ public class NextBus extends Activity implements OnClickListener{
 		Bundle extras = intent.getExtras();
 		String tag = extras != null ? extras.getString(MargueriteTransportation.TAG_ID) : null;
 
-		System.out.println("RESOLVED!!!! " + tag);
-		//stopId = serverData.getStopIdFromTagId(tag);
-		stopId = serverData.getStopIdFromTagId("33");
+		//System.out.println("RESOLVED!!!! " + tag);
+		stopId = serverData.getStopIdFromTagId(tag);
+		//stopId = serverData.getStopIdFromTagId("33");
 		System.out.println("TAGID " + tag + "   stopID = " +  stopId);
 		//stopId = "3";
 	}
+	
+	private void checkVersion()
+	{
+		URL sourceUrl;
+		try {
+			sourceUrl = new URL("http://margueritenfc.heroku.com/version.xml");
+
+
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(
+							sourceUrl.openStream()));
+
+			String version = in.readLine();
+			in.close();
+
+			System.out.println(version);
+			
+			if(!BusAdapter.VERSION.equals(version))
+			{
+				CharSequence text = "The app has a newer version, please update.";
+				int duration = Toast.LENGTH_LONG;
+
+				Toast toast = Toast.makeText(this, text, duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				
+				
+				
+				//app is outdated
+				String url = "http://www.tappem.com/stanfordtappats.htm";
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				startActivity(i);
+				
+				finish();
+			}
+
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	protected void fillData()
 	{
-		System.out.println("HERE@!!");
+		//System.out.println("HERE@!!");
 		//query marguerite server and fill up the list view
 		if(stopId != null){
 			try {
@@ -199,7 +267,7 @@ public class NextBus extends Activity implements OnClickListener{
 				int mins = Integer.parseInt(minsToBus);
 				if(mins <= -1)
 				{
-					System.out.println("Just Left");
+					//System.out.println("Just Left");
 					txt = "Just left";
 					holder.time.setTextSize(TypedValue.COMPLEX_UNIT_PX, 17);
 					holder.time.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.boxgrey));
@@ -228,7 +296,7 @@ public class NextBus extends Activity implements OnClickListener{
 				}
 				else if(mins <= 59)
 				{
-					System.out.println("WEIRD");
+					//System.out.println("WEIRD");
 					txt = minsToBus;
 					holder.time.setPadding(0, 0, 0, 0);
 					holder.time.setTextSize(TypedValue.COMPLEX_UNIT_PX, 55);
